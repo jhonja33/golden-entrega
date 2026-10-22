@@ -1,0 +1,20 @@
+name: fincard
+
+services:
+  audit-service:
+    build:
+      context: ../audit-service
+
+    environment:
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:19092
+
+      APP_AUDIT_FILE: /app/data/transactions-audit.log
+      LOGGING_FILE_NAME: /app/logs/audit-service.log
+
+    volumes:
+      - audit-data:/app/data
+      - audit-logs:/app/logs
+
+volumes:
+  audit-data:
+  audit-logs:

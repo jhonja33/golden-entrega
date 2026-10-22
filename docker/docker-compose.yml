@@ -1,0 +1,47 @@
+name: fincard
+
+services:
+  redis:
+    extends:
+      file: compose.redis.kafka.yaml
+      service: redis
+
+  kafka-permissions:
+    extends:
+      file: compose.redis.kafka.yaml
+      service: kafka-permissions
+
+  kafka:
+    extends:
+      file: compose.redis.kafka.yaml
+      service: kafka
+
+  kafka-topic:
+    extends:
+      file: compose.redis.kafka.yaml
+      service: kafka-topic
+
+  authorization-service:
+    extends:
+      file: compose.authorization.yaml
+      service: authorization-service
+
+    depends_on:
+      redis:
+        condition: service_healthy
+      kafka-topic:
+        condition: service_completed_successfully
+
+  audit-service:
+    extends:
+      file: compose.audit.yaml
+      service: audit-service
+
+    depends_on:
+      kafka-topic:
+        condition: service_completed_successfully
+
+volumes:
+  kafka-data:
+  audit-data:
+  audit-logs:
